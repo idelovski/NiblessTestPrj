@@ -30,7 +30,9 @@ Then, there's another thing related to classic resources. Xcode has this "Build 
 The script:
 
     RESOURCE_DIR="${PROJECT_DIR}/Rsrc"
-    APP_BUNDLE="${BUILT_PRODUCTS_DIR}/${TARGET_NAME}.app" 
+    APP_BUNDLE="${BUILT_PRODUCTS_DIR}/${TARGET_NAME}.app"
+
+    rm -f "${APP_BUNDLE}/Contents/Resources/${TARGET_NAME}.rsrc"
 
     /Applications/Xcode.app/Contents/Developer/usr/bin/ResMerger -srcIs RSRC "${RESOURCE_DIR}/Appl_KnjigeNT.rsrc" -srcIs RSRC "${RESOURCE_DIR}/dTOOL_All.rsrc" -o "${APP_BUNDLE}/Contents/Resources/${TARGET_NAME}.rsrc"
     
@@ -54,3 +56,5 @@ Resources copied to the resulting app were somehow bad. GetResource() failed to 
 ResMerger that ends up in /usr/bin does not work properly. Changing the above script to use ResMerger inside Xcode does the trick.
 
 /Applications/Xcode.app/Contents/Developer/usr/bin/ResMerger works properly and application works as expected.
+
+And in 2026 I found out that on Sonoma with Xcode 15.4 for some reason even that fails because ResMerger or Xcode decide not to do anything because rsrc file already exists on target so let's spare a few miliseconds. But since it works fine in Tahoe I knew it should work somehow. Adding rm -f "${APP_BUNDLE}/Contents/Resources/${TARGET_NAME}.rsrc" in the script solved it. 
